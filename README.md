@@ -1,6 +1,5 @@
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&pause=1000&color=F70E34&width=435&lines=%E5%A6%82%E6%9E%9C%E8%AF%A5%E9%A1%B9%E7%9B%AE%E5%AF%B9%E4%BD%A0%E6%9C%89%E5%B8%AE%E5%8A%A9%E7%9A%84%E8%AF%9D%EF%BC%8C%E6%AC%A2%E8%BF%8E%E7%82%B9%E4%B8%AA+star+%EF%BC%81)](https://git.io/typing-svg)
 
-
 ![1861749980317_ pic](https://github.com/user-attachments/assets/cdaeb3bc-09b0-47be-9a4f-4bd48116103c)
 
 ## 实现效果
@@ -54,13 +53,13 @@
 
 ```json
 {
-  "templateType": "waypoint",
-  "takeOffRefPoint": "39.02706649854977,115.95067260218747,0",
+  "templateType": "mapping2d",
+  "takeOffRefPoint": "22.581115,113.940282,16.035026",
   "droneType": 91,
-  "subDroneType": 0,
+  "subDroneType": 1,
   "payloadType": 81,
   "payloadPosition": 0,
-  "imageFormat": "wide",
+  "imageFormat": "visable,ir",
   "finishAction": "autoLand",
   "exitOnRcLostAction": "goBack",
   "globalHeight": 100,
@@ -72,14 +71,55 @@
     "waypointTurnMode": "toPointAndStopWithDiscontinuityCurvature"
   },
   "gimbalPitchMode": "usePointSetting",
+  "mappingTypeReq": {
+    "collectionMethod": "camera",
+    "lensType": "ortho",
+    "overlapH": 80,
+    "overlapW": 70,
+    "elevationOptimizeEnable": 1,
+    "shootType": "time",
+    "direction": 89,
+    "margin": 0,
+    "coordinates": [
+      {
+        "longitude": 113.940334790292,
+        "latitude": 22.5798256945836,
+        "height": 0
+      },
+      {
+        "longitude": 113.943015351291,
+        "latitude": 22.5798490554135,
+        "height": 0
+      },
+      {
+        "longitude": 113.942911397786,
+        "latitude": 22.5816299613237,
+        "height": 0
+      },
+      {
+        "longitude": 113.940344598963,
+        "latitude": 22.5816387784883,
+        "height": 0
+      }
+    ]
+  },
+  "startActionList": [
+    {
+      "actionIndex": 0,
+      "gimbalYawRotateAngle": -90
+    },
+    {
+      "actionIndex": 1,
+      "hoverTime": 0.5
+    }
+  ],
   "routePointList": [
     {
       "routePointIndex": 0,
-      "longitude": 115.94831278397191,
-      "latitude": 39.02661859808053,
-      "isStartAndEndPoint": true,
-      "timeInterval": 5,
-      "endIntervalRouteIndex": 1,
+      "longitude": 113.940343144377,
+      "latitude": 22.5813699888658,
+      "timeInterval": 2,
+      "endIntervalRouteIndex": 10,
       "actions": [
         {
           "actionIndex": 0,
@@ -90,43 +130,58 @@
     },
     {
       "routePointIndex": 1,
-      "longitude": 115.94831278397191,
-      "latitude": 39.02661859808053,
-      "isStartAndEndPoint": false
+      "longitude": 113.942924142576,
+      "latitude": 22.5814115656784
     },
     {
       "routePointIndex": 2,
-      "longitude": 115.94983615244982,
-      "latitude": 39.025246778993534,
-      "isStartAndEndPoint": false,
-      "actions": [
-        {
-          "actionIndex": 0,
-          "hoverTime": 5
-        },
-        {
-          "actionIndex": 1,
-          "useGlobalImageFormat": 1,
-          "takePhotoType": 1
-        }
-      ]
+      "longitude": 113.942943025065,
+      "latitude": 22.5810880647388
     },
     {
       "routePointIndex": 3,
-      "longitude": 115.9471013661498,
-      "latitude": 39.0252061309485,
-      "isStartAndEndPoint": true,
-      "actions": [
-        {
-          "actionIndex": 0,
-          "startRecord": true,
-          "useGlobalImageFormat": 1
-        },
-        {
-          "actionIndex": 0,
-          "stopRecord": true
-        }
-      ]
+      "longitude": 113.940341392538,
+      "latitude": 22.5810461555712
+    },
+    {
+      "routePointIndex": 4,
+      "longitude": 113.940339640707,
+      "latitude": 22.5807223222765
+    },
+    {
+      "routePointIndex": 5,
+      "longitude": 113.942961907465,
+      "latitude": 22.5807645637969
+    },
+    {
+      "routePointIndex": 6,
+      "longitude": 113.942980789776,
+      "latitude": 22.5804410628529
+    },
+    {
+      "routePointIndex": 7,
+      "longitude": 113.940337888885,
+      "latitude": 22.5803984889819
+    },
+    {
+      "routePointIndex": 8,
+      "longitude": 113.940336137071,
+      "latitude": 22.5800746556873
+    },
+    {
+      "routePointIndex": 9,
+      "longitude": 113.942997724328,
+      "latitude": 22.5801175305482
+    },
+    {
+      "routePointIndex": 10,
+      "longitude": 113.942999671999,
+      "latitude": 22.5801175619067
+    },
+    {
+      "routePointIndex": 11,
+      "longitude": 113.941647829558,
+      "latitude": 22.580729324342
     }
   ]
 }
@@ -138,13 +193,13 @@
 
 ```json
 {
-  "templateType": "waypoint",
-  "takeOffRefPoint": "39.02706649854977,115.95067260218747,0",
+  "templateType": "mapping2d",
+  "takeOffRefPoint": "22.581115,113.940282,16.035026",
   "droneType": 91,
-  "subDroneType": 0,
+  "subDroneType": 1,
   "payloadType": 81,
   "payloadPosition": 0,
-  "imageFormat": "wide",
+  "imageFormat": "visable,ir",
   "finishAction": "autoLand",
   "exitOnRcLostAction": "goBack",
   "globalHeight": 100,
@@ -156,14 +211,55 @@
     "waypointTurnMode": "toPointAndStopWithDiscontinuityCurvature"
   },
   "gimbalPitchMode": "usePointSetting",
+  "mappingTypeReq": {
+    "collectionMethod": "camera",
+    "lensType": "ortho",
+    "overlapH": 80,
+    "overlapW": 70,
+    "elevationOptimizeEnable": 1,
+    "shootType": "time",
+    "direction": 89,
+    "margin": 0,
+    "coordinates": [
+      {
+        "longitude": 113.940334790292,
+        "latitude": 22.5798256945836,
+        "height": 0
+      },
+      {
+        "longitude": 113.943015351291,
+        "latitude": 22.5798490554135,
+        "height": 0
+      },
+      {
+        "longitude": 113.942911397786,
+        "latitude": 22.5816299613237,
+        "height": 0
+      },
+      {
+        "longitude": 113.940344598963,
+        "latitude": 22.5816387784883,
+        "height": 0
+      }
+    ]
+  },
+  "startActionList": [
+    {
+      "actionIndex": 0,
+      "gimbalYawRotateAngle": -90
+    },
+    {
+      "actionIndex": 1,
+      "hoverTime": 0.5
+    }
+  ],
   "routePointList": [
     {
       "routePointIndex": 0,
-      "longitude": 115.94831278397191,
-      "latitude": 39.02661859808053,
-      "isStartAndEndPoint": true,
-      "timeInterval": 5,
-      "endIntervalRouteIndex": 1,
+      "longitude": 113.940343144377,
+      "latitude": 22.5813699888658,
+      "timeInterval": 2,
+      "endIntervalRouteIndex": 10,
       "actions": [
         {
           "actionIndex": 0,
@@ -174,43 +270,58 @@
     },
     {
       "routePointIndex": 1,
-      "longitude": 115.94831278397191,
-      "latitude": 39.02661859808053,
-      "isStartAndEndPoint": false
+      "longitude": 113.942924142576,
+      "latitude": 22.5814115656784
     },
     {
       "routePointIndex": 2,
-      "longitude": 115.94983615244982,
-      "latitude": 39.025246778993534,
-      "isStartAndEndPoint": false,
-      "actions": [
-        {
-          "actionIndex": 0,
-          "hoverTime": 5
-        },
-        {
-          "actionIndex": 1,
-          "useGlobalImageFormat": 1,
-          "takePhotoType": 1
-        }
-      ]
+      "longitude": 113.942943025065,
+      "latitude": 22.5810880647388
     },
     {
       "routePointIndex": 3,
-      "longitude": 115.9471013661498,
-      "latitude": 39.0252061309485,
-      "isStartAndEndPoint": true,
-      "actions": [
-        {
-          "actionIndex": 0,
-          "startRecord": true,
-          "useGlobalImageFormat": 1
-        },
-        {
-          "actionIndex": 0,
-          "stopRecord": true
-        }
-      ]
+      "longitude": 113.940341392538,
+      "latitude": 22.5810461555712
+    },
+    {
+      "routePointIndex": 4,
+      "longitude": 113.940339640707,
+      "latitude": 22.5807223222765
+    },
+    {
+      "routePointIndex": 5,
+      "longitude": 113.942961907465,
+      "latitude": 22.5807645637969
+    },
+    {
+      "routePointIndex": 6,
+      "longitude": 113.942980789776,
+      "latitude": 22.5804410628529
+    },
+    {
+      "routePointIndex": 7,
+      "longitude": 113.940337888885,
+      "latitude": 22.5803984889819
+    },
+    {
+      "routePointIndex": 8,
+      "longitude": 113.940336137071,
+      "latitude": 22.5800746556873
+    },
+    {
+      "routePointIndex": 9,
+      "longitude": 113.942997724328,
+      "latitude": 22.5801175305482
+    },
+    {
+      "routePointIndex": 10,
+      "longitude": 113.942999671999,
+      "latitude": 22.5801175619067
+    },
+    {
+      "routePointIndex": 11,
+      "longitude": 113.941647829558,
+      "latitude": 22.580729324342
     }
   ]
 }
