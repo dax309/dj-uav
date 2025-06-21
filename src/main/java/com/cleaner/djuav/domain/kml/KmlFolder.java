@@ -1,5 +1,6 @@
 package com.cleaner.djuav.domain.kml;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import lombok.Data;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Data
 @XStreamAlias("Folder")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class KmlFolder {
     @XStreamAlias("wpml:templateType")
     private String templateType;
@@ -51,6 +53,6 @@ public class KmlFolder {
     private String waylineId;
 
     @XStreamAlias("wpml:startActionGroup")
-    private KmlActionGroup actionGroup;
+    private KmlActionGroup startActionGroup;
 
 }

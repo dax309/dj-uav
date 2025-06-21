@@ -1,10 +1,12 @@
 package com.cleaner.djuav.domain.kml;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.Data;
 
 @Data
 @XStreamAlias("wpml:missionConfig")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class KmlMissionConfig {
 
     @XStreamAlias("wpml:flyToWaylineMode")

@@ -11,6 +11,7 @@ import com.cleaner.djuav.domain.WaypointTurnReq;
 import com.cleaner.djuav.domain.kml.*;
 import com.cleaner.djuav.enums.kml.ExitOnRCLostEnums;
 import com.cleaner.djuav.service.UavRouteService;
+import com.cleaner.djuav.util.FileUtils;
 import com.cleaner.djuav.util.RouteFileUtils;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -20,12 +21,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Author:songjian
+ * Author:Cleaner
  * Date: 2024/12/22 10:36
  **/
 @Service
@@ -34,7 +36,7 @@ public class UavRouteServiceImpl implements UavRouteService {
     @Override
     public void updateKmz(UavRouteReq uavRouteReq) {
         // TODO 替换本地文件路径！！！
-        File file = FileUtil.file("/Users/songjian/Project/IdeaProjects/dj-uav/file/kmz/航线kmz文件.kmz");
+        File file = FileUtil.file("/Users/Cleaner/Project/IdeaProjects/dj-uav/file/kmz/航线kmz文件.kmz");
         try (ArchiveInputStream archiveInputStream = new ZipArchiveInputStream(FileUtil.getInputStream(file))) {
             ArchiveEntry entry;
             KmlInfo kmlInfo = new KmlInfo();
@@ -104,5 +106,27 @@ public class UavRouteServiceImpl implements UavRouteService {
         BeanUtils.copyProperties(uavRouteReq, kmlParams);
         kmlParams.setRoutePointList(BeanUtil.copyToList(uavRouteReq.getRoutePointList(), RoutePointInfo.class));
         RouteFileUtils.buildKmz("航线kmz文件", kmlParams);
+    }
+
+    @Override
+    public KmlInfo parseKmz(String fileUrl) throws IOException {
+        File file = FileUtils.downloadUrlToTempFile(fileUrl);
+        try (ArchiveInputStream archiveInputStream = new ZipArchiveInputStream(FileUtil.getInputStream(file))) {
+            ArchiveEntry entry;
+            KmlInfo kmlInfo = new KmlInfo();
+            KmlInfo wpmlInfo = new KmlInfo();
+            while (!Objects.isNull(entry = archiveInputStream.getNextEntry())) {
+                String name = entry.getName();
+                if (name.toLowerCase().endsWith(".kml")) {
+                    kmlInfo = RouteFileUtils.parseKml(archiveInputStream);
+                } else if (name.toLowerCase().endsWith(".wpml")) {
+                    wpmlInfo = RouteFileUtils.parseKml(archiveInputStream);
+                }
+            }
+            return kmlInfo;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

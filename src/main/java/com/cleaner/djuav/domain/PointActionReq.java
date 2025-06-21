@@ -2,14 +2,11 @@ package com.cleaner.djuav.domain;
 
 import lombok.Data;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 public class PointActionReq implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = -1234025611387201652L;
     /**
      * 动作编号
      */
@@ -18,12 +15,17 @@ public class PointActionReq implements Serializable {
     /**
      * 飞行器悬停等待时间
      */
-    private Integer hoverTime;
+    private Double hoverTime;
 
     /**
      * 飞行器目标偏航角
      */
     private Double aircraftHeading;
+
+    /**
+     * 普通拍照：0，全景拍照：1
+     */
+    private Integer takePhotoType;
 
     /**
      * 是否使用全局拍照模式 0：不使用 1：使用
@@ -35,10 +37,6 @@ public class PointActionReq implements Serializable {
      */
     private String imageFormat;
 
-    /**
-     * 普通拍照0 全景拍照1
-     */
-    private Integer takePhotoType;
 
     /**
      * 云台偏航角

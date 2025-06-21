@@ -2,12 +2,11 @@ package com.cleaner.djuav.domain;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Author:songjian
+ * Author:Cleaner
  * Date: 2024/12/22 10:46
  **/
 @Data
@@ -92,5 +91,10 @@ public class UavRouteReq implements Serializable {
      * 建图航拍、倾斜摄影、航带飞行模板参数
      */
     private MappingTypeReq mappingTypeReq;
+
+    /**
+     * 航线初始动作列表
+     */
+    private List<PointActionReq> startActionList;
 
 }

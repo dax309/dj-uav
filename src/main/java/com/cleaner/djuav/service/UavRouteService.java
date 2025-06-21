@@ -1,7 +1,9 @@
 package com.cleaner.djuav.service;
 
 import com.cleaner.djuav.domain.UavRouteReq;
-import org.springframework.web.multipart.MultipartFile;
+import com.cleaner.djuav.domain.kml.KmlInfo;
+
+import java.io.IOException;
 
 public interface UavRouteService {
 
@@ -14,4 +16,11 @@ public interface UavRouteService {
      * 生成kmz文件(带航点)
      */
     void buildKmz(UavRouteReq uavRouteReq);
+
+    /**
+     * 解析kmz文件
+     *
+     * @param file
+     */
+    KmlInfo parseKmz(String file) throws IOException;
 }

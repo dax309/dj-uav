@@ -183,13 +183,18 @@ public class RouteFileUtils {
         kmlFolder.setAutoFlightSpeed(String.valueOf(kmlParams.getAutoFlightSpeed()));
         if (StringUtils.equals(fileType, FileTypeConstants.KML)) {
             kmlFolder.setTemplateType(kmlParams.getTemplateType());
-            kmlFolder.setWaylineCoordinateSysParam(buildKmlWayLineCoordinateSysParam(TemplateTypeEnums.WAYPOINT.getValue()));
+            kmlFolder.setWaylineCoordinateSysParam(buildKmlWayLineCoordinateSysParam(kmlParams.getTemplateType(), HeightModeEnums.RELATIVE_TO_START_POINT.getValue(),
+                    String.valueOf(kmlParams.getGlobalHeight())));
             kmlFolder.setPayloadParam(buildKmlPayloadParam(kmlParams));
         }
         if (StringUtils.equals(fileType, FileTypeConstants.WPML)) {
             kmlFolder.setWaylineId("0");
             kmlFolder.setExecuteHeightMode(ExecuteHeightModeEnums.RELATIVE_TO_START_POINT.getValue());
-            // TODO 航线初始动作
+            if (CollectionUtil.isNotEmpty(kmlParams.getStartActionList())) {
+                KmlActionGroup kmlActionGroup = new KmlActionGroup();
+                kmlActionGroup.setAction(getKmlActionList(kmlParams.getStartActionList(), kmlParams));
+                kmlFolder.setStartActionGroup(kmlActionGroup);
+            }
         }
         // 航点类型模板航线配置
         if (StringUtils.equals(kmlFolder.getTemplateType(), TemplateTypeEnums.WAYPOINT.getValue())) {
@@ -213,7 +218,6 @@ public class RouteFileUtils {
                         .max(Comparator.comparing(RoutePointInfo::getRoutePointIndex))
                         .ifPresent(routePointInfo -> routePointInfo.setIsStartAndEndPoint(Boolean.TRUE));
                 List<KmlPlacemark> kmlPlacemarkList = new ArrayList<>();
-
                 for (RoutePointInfo routePointInfo : routePointList) {
                     kmlPlacemarkList.add(buildKmlPlacemark(routePointInfo, kmlParams, fileType));
                 }
@@ -230,12 +234,6 @@ public class RouteFileUtils {
                 if (CollectionUtil.isNotEmpty(routePointList)) {
                     List<KmlPlacemark> kmlPlacemarkList = new ArrayList<>();
                     for (RoutePointInfo routePointInfo : routePointList) {
-//                        ActionTriggerReq actionTriggerReq = new ActionTriggerReq();
-//                        actionTriggerReq.setActionTriggerType(StringUtils.equals(kmlParams.getMappingTypeReq().getShootType(), ShootTypeEnums.TIME.getValue()) ?
-//                                ActionTriggerTypeEnums.MULTIPLE_TIMING.getValue() :
-//                                ActionTriggerTypeEnums.MULTIPLE_DISTANCE.getValue());
-//                        actionTriggerReq.setActionTriggerParam(2.0);
-//                        RoutePointInfo.setActionTriggerReq(actionTriggerReq);
                         kmlPlacemarkList.add(buildKmlPlacemark(routePointInfo, kmlParams, fileType));
                     }
                     kmlFolder.setPlacemarkList(kmlPlacemarkList);
@@ -245,18 +243,56 @@ public class RouteFileUtils {
         return kmlFolder;
     }
 
+    /**
+     * 构建航点动作
+     *
+     * @param actionList 航点动作列表
+     * @param kmlParams
+     * @return
+     */
+    private static List<KmlAction> getKmlActionList(List<PointActionReq> actionList, KmlParams kmlParams) {
+        List<KmlAction> kmlActionList = new ArrayList<>();
+        for (PointActionReq pointActionReq : actionList) {
+            if (ObjectUtil.isNotNull(pointActionReq.getHoverTime())) {
+                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.HOVER.getValue(), pointActionReq, kmlParams));
+            } else if (ObjectUtil.isNotNull(pointActionReq.getAircraftHeading())) {
+                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.ROTATE_YAW.getValue(), pointActionReq, kmlParams));
+            } else if (ObjectUtil.isNotNull(pointActionReq.getTakePhotoType()) && ObjectUtil.equals(pointActionReq.getTakePhotoType(), 0)) {
+                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.TAKE_PHOTO.getValue(), pointActionReq, kmlParams));
+            } else if ((ObjectUtil.isNotNull(pointActionReq.getGimbalYawRotateAngle())) || (ObjectUtil.isNotNull(pointActionReq.getGimbalPitchRotateAngle()))) {
+                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.GIMBAL_ROTATE.getValue(), pointActionReq, kmlParams));
+            } else if (ObjectUtil.isNotNull(pointActionReq.getZoom())) {
+                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.ZOOM.getValue(), pointActionReq, kmlParams));
+            } else if (ObjectUtil.isNotNull(pointActionReq.getTakePhotoType()) && ObjectUtil.equals(pointActionReq.getTakePhotoType(), 1)) {
+                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.PANO_SHOT.getValue(), pointActionReq, kmlParams));
+            } else if (ObjectUtil.isNotNull(pointActionReq.getStartRecord()) && pointActionReq.getStartRecord()) {
+                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.START_RECORD.getValue(), pointActionReq, kmlParams));
+            } else if (ObjectUtil.isNotNull(pointActionReq.getStopRecord()) && pointActionReq.getStopRecord()) {
+                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.STOP_RECORD.getValue(), pointActionReq, kmlParams));
+            }
+        }
+        return kmlActionList;
+    }
 
-    public static KmlWayLineCoordinateSysParam buildKmlWayLineCoordinateSysParam(String templateType) {
+    /**
+     * 构造坐标系参数信息
+     *
+     * @param templateType 航线模板类型
+     * @param heightMode   高度模式
+     * @param height       高度
+     * @return 坐标系参数信息
+     */
+    public static KmlWayLineCoordinateSysParam buildKmlWayLineCoordinateSysParam(String templateType, String heightMode, String height) {
         KmlWayLineCoordinateSysParam kmlWayLineCoordinateSysParam = new KmlWayLineCoordinateSysParam();
         kmlWayLineCoordinateSysParam.setCoordinateMode("WGS84");
-        kmlWayLineCoordinateSysParam.setHeightMode(HeightModeEnums.RELATIVE_TO_START_POINT.getValue());
+        kmlWayLineCoordinateSysParam.setHeightMode(heightMode);
         kmlWayLineCoordinateSysParam.setPositioningType(PositioningTypeEnums.GPS.getValue());
         if (StringUtils.equals(templateType, TemplateTypeEnums.MAPPING2D.getValue()) ||
                 StringUtils.equals(templateType, TemplateTypeEnums.MAPPING3D.getValue()) ||
                 StringUtils.equals(templateType, TemplateTypeEnums.MAPPING_STRIP.getValue())) {
-            kmlWayLineCoordinateSysParam.setGlobalShootHeight("50");
+            kmlWayLineCoordinateSysParam.setGlobalShootHeight(height);
             kmlWayLineCoordinateSysParam.setSurfaceFollowModeEnable("1");
-            kmlWayLineCoordinateSysParam.setSurfaceRelativeHeight("100");
+            kmlWayLineCoordinateSysParam.setSurfaceRelativeHeight(height);
         }
         return kmlWayLineCoordinateSysParam;
     }
@@ -333,23 +369,34 @@ public class RouteFileUtils {
 
     private static KmlOverlap buildKmlOverlap(String collectionMethod, String lensType, Integer overlapH, Integer overlapW) {
         KmlOverlap overlap = new KmlOverlap();
-        if (StringUtils.equals(collectionMethod, CollectionMethodEnums.ORTHO.getValue())) {
-            if (StringUtils.equals(lensType, LensTypeEnums.LIDAR.getValue())) {
-                overlap.setOrthoLidarOverlapH(String.valueOf(overlapH));
-                overlap.setOrthoLidarOverlapW(String.valueOf(overlapW));
-            } else {
-                overlap.setOrthoCameraOverlapH(String.valueOf(overlapH));
-                overlap.setOrthoCameraOverlapW(String.valueOf(overlapW));
-            }
+        if (StringUtils.equals(collectionMethod, LensTypeEnums.CAMERA.getValue())) {
+            overlap.setOrthoCameraOverlapH(String.valueOf(overlapH));
+            overlap.setOrthoCameraOverlapW(String.valueOf(overlapW));
+            overlap.setInclinedCameraOverlapW(String.valueOf(overlapW));
+            overlap.setInclinedCameraOverlapH(String.valueOf(overlapH));
         } else {
-            if (StringUtils.equals(lensType, LensTypeEnums.LIDAR.getValue())) {
-                overlap.setInclinedLidarOverlapH(String.valueOf(overlapH));
-                overlap.setInclinedCameraOverlapW(String.valueOf(overlapW));
-            } else {
-                overlap.setInclinedCameraOverlapH(String.valueOf(overlapH));
-                overlap.setInclinedCameraOverlapW(String.valueOf(overlapW));
-            }
+            overlap.setOrthoLidarOverlapH(String.valueOf(overlapH));
+            overlap.setOrthoLidarOverlapW(String.valueOf(overlapW));
+            overlap.setInclinedLidarOverlapH(String.valueOf(overlapH));
+            overlap.setInclinedLidarOverlapW(String.valueOf(overlapW));
         }
+//        if (StringUtils.equals(collectionMethod, CollectionMethodEnums.ORTHO.getValue())) {
+//            if (StringUtils.equals(lensType, LensTypeEnums.LIDAR.getValue())) {
+//                overlap.setOrthoLidarOverlapH(String.valueOf(overlapH));
+//                overlap.setOrthoLidarOverlapW(String.valueOf(overlapW));
+//            } else {
+//                overlap.setOrthoCameraOverlapH(String.valueOf(overlapH));
+//                overlap.setOrthoCameraOverlapW(String.valueOf(overlapW));
+//            }
+//        } else {
+//            if (StringUtils.equals(lensType, LensTypeEnums.LIDAR.getValue())) {
+//                overlap.setInclinedLidarOverlapH(String.valueOf(overlapH));
+//                overlap.setInclinedLidarOverlapW(String.valueOf(overlapW));
+//            } else {
+//                overlap.setInclinedCameraOverlapH(String.valueOf(overlapH));
+//                overlap.setInclinedCameraOverlapW(String.valueOf(overlapW));
+//            }
+//        }
         return overlap;
     }
 
@@ -496,28 +543,7 @@ public class RouteFileUtils {
         }
 
         kmlActionGroup.setActionTrigger(buildKmlActionTrigger(actionTriggerType, actionTriggerParam));
-        List<KmlAction> kmlActionList = new ArrayList<>();
-        for (PointActionReq pointActionReq : routePointInfo.getActions()) {
-            if (ObjectUtil.isNotNull(pointActionReq.getHoverTime())) {
-                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.HOVER.getValue(), pointActionReq, kmlParams));
-            } else if (ObjectUtil.isNotNull(pointActionReq.getAircraftHeading())) {
-                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.ROTATE_YAW.getValue(), pointActionReq, kmlParams));
-            } else if (ObjectUtil.isNotNull(pointActionReq.getTakePhotoType()) && ObjectUtil.equals(pointActionReq.getTakePhotoType(), 0)) {
-                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.TAKE_PHOTO.getValue(), pointActionReq, kmlParams));
-            } else if ((ObjectUtil.isNotNull(pointActionReq.getGimbalYawRotateAngle())) || (ObjectUtil.isNotNull(pointActionReq.getGimbalPitchRotateAngle()))) {
-                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.GIMBAL_ROTATE.getValue(), pointActionReq, kmlParams));
-            } else if (ObjectUtil.isNotNull(pointActionReq.getZoom())) {
-                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.ZOOM.getValue(), pointActionReq, kmlParams));
-            } else if (ObjectUtil.isNotNull(pointActionReq.getTakePhotoType()) && ObjectUtil.equals(pointActionReq.getTakePhotoType(), 1)) {
-                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.PANO_SHOT.getValue(), pointActionReq, kmlParams));
-            } else if (ObjectUtil.isNotNull(pointActionReq.getStartRecord()) && pointActionReq.getStartRecord()) {
-                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.START_RECORD.getValue(), pointActionReq, kmlParams));
-            } else if (ObjectUtil.isNotNull(pointActionReq.getStopRecord()) && pointActionReq.getStopRecord()) {
-                kmlActionList.add(buildKmlAction(String.valueOf(pointActionReq.getActionIndex()), ActionActuatorFuncEnums.STOP_RECORD.getValue(), pointActionReq, kmlParams));
-            }
-
-        }
-        kmlActionGroup.setAction(kmlActionList);
+        kmlActionGroup.setAction(getKmlActionList(routePointInfo.getActions(), kmlParams));
         return kmlActionGroup;
     }
 

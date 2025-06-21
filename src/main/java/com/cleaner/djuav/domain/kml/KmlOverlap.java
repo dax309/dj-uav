@@ -1,34 +1,36 @@
 package com.cleaner.djuav.domain.kml;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.Data;
 
 @Data
 @XStreamAlias("wpml:overlap")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class KmlOverlap {
 
-    @XStreamAlias("orthoLidarOverlapH")
+    @XStreamAlias("wpml:orthoLidarOverlapH")
     private String orthoLidarOverlapH;
 
-    @XStreamAlias("orthoLidarOverlapW")
+    @XStreamAlias("wpml:orthoLidarOverlapW")
     private String orthoLidarOverlapW;
 
-    @XStreamAlias("orthoCameraOverlapH")
+    @XStreamAlias("wpml:orthoCameraOverlapH")
     private String orthoCameraOverlapH;
 
-    @XStreamAlias("orthoCameraOverlapW")
+    @XStreamAlias("wpml:orthoCameraOverlapW")
     private String orthoCameraOverlapW;
 
-    @XStreamAlias("inclinedLidarOverlapH")
+    @XStreamAlias("wpml:inclinedLidarOverlapH")
     private String inclinedLidarOverlapH;
 
-    @XStreamAlias("inclinedLidarOverlapW")
+    @XStreamAlias("wpml:inclinedLidarOverlapW")
     private String inclinedLidarOverlapW;
 
-    @XStreamAlias("inclinedCameraOverlapH")
+    @XStreamAlias("wpml:inclinedCameraOverlapH")
     private String inclinedCameraOverlapH;
 
-    @XStreamAlias("inclinedCameraOverlapW")
+    @XStreamAlias("wpml:inclinedCameraOverlapW")
     private String inclinedCameraOverlapW;
 
 }

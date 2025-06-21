@@ -1,27 +1,15 @@
 package com.cleaner.djuav.controller;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.cleaner.djuav.domain.UavRouteReq;
 import com.cleaner.djuav.domain.kml.KmlInfo;
-import com.cleaner.djuav.domain.kml.KmlParams;
 import com.cleaner.djuav.service.UavRouteService;
-import com.cleaner.djuav.util.RouteFileUtils;
 import jakarta.annotation.Resource;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
-
-import static com.cleaner.djuav.util.RouteFileUtils.parseKml;
 
 @RestController
 public class UavRouteController {
@@ -34,15 +22,24 @@ public class UavRouteController {
      */
     @PostMapping("/updateKmz")
     public void updateKmz(@RequestBody UavRouteReq uavRouteReq) {
-        routeService.updateKmz(uavRouteReq);
+        this.routeService.updateKmz(uavRouteReq);
     }
 
     /**
      * 生成kmz文件
      */
     @PostMapping("/buildKmz")
-    public void buildKmz(@RequestBody UavRouteReq uavRouteReq){
-        routeService.buildKmz(uavRouteReq);
+    public void buildKmz(@RequestBody UavRouteReq uavRouteReq) {
+        this.routeService.buildKmz(uavRouteReq);
     }
 
+    /**
+     * 解析kmz文件
+     *
+     * @param fileUrl
+     */
+    @PostMapping("/parseKmz")
+    public KmlInfo parseKmz(@RequestParam("fileUrl") String fileUrl) throws IOException {
+        return this.routeService.parseKmz(fileUrl);
+    }
 }
