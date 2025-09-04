@@ -1,5 +1,5 @@
 server:
-  port: 6666
+  port: 8080
 
 spring:
   application:
@@ -8,3 +8,38 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  
+  # 数据源配置 - 暂时注释掉以测试基本功能
+  # datasource:
+  #   url: jdbc:postgresql://localhost:5432/dj_uav
+  #   username: postgres
+  #   password: 123456
+  #   driver-class-name: org.postgresql.Driver
+  #   hikari:
+  #     maximum-pool-size: 20
+  #     minimum-idle: 5
+  #     connection-timeout: 30000
+  #     idle-timeout: 600000
+  #     max-lifetime: 1800000
+
+# MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      logic-delete-value: true
+      logic-not-delete-value: false
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.cleaner.djuav.entity
+
+# 日志配置
+logging:
+  level:
+    com.cleaner.djuav.mapper: debug
+    org.springframework.jdbc: debug

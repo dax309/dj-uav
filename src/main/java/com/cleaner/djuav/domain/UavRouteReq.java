@@ -13,6 +13,11 @@ import java.util.List;
 public class UavRouteReq implements Serializable {
 
     /**
+     * 航线名称
+     */
+    private String routeName;
+
+    /**
      * 航线类型
      */
     private String templateType;
